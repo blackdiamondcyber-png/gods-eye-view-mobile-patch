@@ -1,6 +1,6 @@
 # Everything this pack changes
 
-Two files, 41 CSS rules and one script. No app source file is modified, so the
+Three files: 41 CSS rules and two scripts. No app source file is modified, so the
 pack survives upstream updates unless `index.html` is overwritten.
 
 Every number below was measured on the running app in Chrome emulating a
@@ -191,7 +191,36 @@ next visit starts pulling camera frames immediately, roughly 34 MB a minute.
 
 ---
 
-## 3. `index.html`
+## 3. Mesh detail guard (`mesh-detail.js`)
+
+Independent of the other two files. It answers one question: why does part of
+the 3D view look melted?
+
+Because Google's mesh has a finite resolution per area, and below roughly 350 m
+it runs out. Verified it is not a failure: 1,199 tile requests, every one HTTP
+200, while the view was unreadable.
+
+| Camera height | Triangles in view | Sharpness vs 1200m |
+| ------------- | ----------------- | ------------------ |
+| 350 m         | 579,065           | 101%               |
+| 250 m         | 357,271           | 70%                |
+| 180 m         | 139,072           | 44%                |
+| 120 m         | 24,985            | 10%                |
+
+Keyed on triangles in view, normalised per 1000 screen pixels, rather than on
+altitude. Altitude would need the ground elevation, and `scene.globe.show` is
+false here because the tileset replaces the globe, so `globe.getHeight()`
+returns undefined and the app's own `floorAltitudeM()` returns null until it is
+warmed.
+
+Shows a dismissible chip with **PULL BACK** and **FLAT MAP**. Never moves the
+camera by itself: the CCTV projection and scene playback move it deliberately,
+and fighting them would be worse than the problem.
+
+No loading indicator, deliberately. Tiles settled within 1-2 seconds at every
+altitude sampled, so it was noise, and on a phone it covered the CCTV panel.
+
+## 4. `index.html`
 
 Two lines, each with a comment saying how to revert.
 

@@ -26,17 +26,19 @@ Idle, which is most of the time:
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `mobile-fix.css`          | Phone layout fixes, scoped to `@media (max-width: 640px)`, plus one always-on rule that removes the voice control button (see [Voice control, removed](#voice-control-removed)) |
 | `session-memory.js`       | Remembers which data layers were on and which map source was picked, and restores them on the next visit                                                                        |
+| `mesh-detail.js`          | Explains the smeared 3D geometry when Google's mesh runs out of detail, and offers a one-tap fix                                                                                 |
 | `start-gods-eye-view.cmd.example` | Optional Windows launcher that builds the app and opens it at an address you set                                                                                                |
 | `LICENSE.upstream`        | A copy of the upstream project's license, kept here for attribution                                                                                                             |
 
 ## Install
 
-1. Copy `mobile-fix.css` and `session-memory.js` into the app's `public/` folder.
-2. Add these two lines inside `<head>` in `index.html`:
+1. Copy `mobile-fix.css`, `session-memory.js` and `mesh-detail.js` into the app's `public/` folder.
+2. Add these three lines inside `<head>` in `index.html`:
 
    ```html
    <link rel="stylesheet" href="/mobile-fix.css" />
    <script src="/session-memory.js" defer></script>
+   <script src="/mesh-detail.js" defer></script>
    ```
 
 3. Rebuild:
@@ -45,7 +47,7 @@ Idle, which is most of the time:
    npm run build
    ```
 
-To revert, delete the two files and those two lines; nothing else changes.
+Each file is independent, so you can install only the ones you want. To revert, delete the files and their lines; nothing else changes.
 
 Because this pack never touches app source, it survives upstream updates on its own. The one exception is `index.html` itself: pulling an upstream update that replaces that file will overwrite your two added lines, so re-add them afterward.
 
@@ -87,6 +89,54 @@ already restored:
 ### Data caveat
 
 Layer state is remembered, so closing the page with the Cameras layer on means the next visit starts pulling camera frames immediately, at about 34 MB per minute (see [Map data usage](#map-data-usage)). Turn Cameras off before closing the tab if you are on a metered connection.
+
+## Why parts of the 3D view look melted
+
+Google Photorealistic 3D Tiles are built from aerial photography and have a
+finite resolution per area. Get closer than the data supports and the mesh
+smears into unreadable blobs. It looks exactly like a loading failure, so it is
+easy to assume something is broken or that an API quota ran out.
+
+It usually isn't. Flying over downtown Austin with the view completely melted,
+**1,199 requests to `tile.googleapis.com` all returned HTTP 200**. Nothing had
+failed. The mesh simply had no more detail to give.
+
+Measured at a fixed point, waiting for `tilesLoaded` at each height:
+
+| Camera height | Triangles in view | Sharpness vs 1200m |
+| ------------- | ----------------- | ------------------ |
+| 1200 m        | 494,556           | 100%               |
+| 500 m         | 548,748           | 104%               |
+| 350 m         | 579,065           | 101%               |
+| 250 m         | 357,271           | 70%                |
+| 180 m         | 139,072           | 44%                |
+| 120 m         | 24,985            | 10%                |
+
+Detail is flat all the way down to about 350 m, then falls off a cliff.
+Reflective glass towers and active construction sites are the worst cases,
+because photogrammetry cannot resolve mirrored surfaces or moving cranes.
+
+<img src="screenshots/mesh-detail-chip.jpg" width="620" alt="The app at 120m over downtown Austin with the 3D mesh smeared into featureless blobs, and a small chip reading LIMITED 3D DETAIL HERE, NOT A LOADING ERROR with PULL BACK and FLAT MAP buttons">
+
+`mesh-detail.js` watches the triangle count in view (normalised per 1000 screen
+pixels, so the same threshold works on a phone and a desktop) and when the mesh
+has genuinely run out it shows a small dismissible chip offering two actions:
+
+- **PULL BACK** rises to a height where detail returns, keeping the same ground
+  point and orientation.
+- **FLAT MAP** switches to Esri Satellite, which has no mesh to break.
+
+It detects this from geometry rather than altitude because altitude alone would
+need the ground elevation, which is not available here: `scene.globe.show` is
+false, since the 3D tileset replaces the globe.
+
+It never moves the camera on its own. Both actions are explicit taps, because
+silently flying the camera would fight the CCTV projection and scene playback,
+which move it deliberately.
+
+There is no "still loading" indicator, on purpose. Every altitude sampled during
+calibration reported `tilesLoaded` within one to two seconds, so an indicator
+for that wait was noise, and on a phone it sat on top of the CCTV panel.
 
 ## Map data usage
 
