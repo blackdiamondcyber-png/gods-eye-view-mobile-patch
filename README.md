@@ -4,6 +4,22 @@ Unofficial patch pack for [God's Eye View](https://github.com/bilawalsidhu/gods-
 
 Upstream has no mobile layout yet. Its desktop UI (corner HUD readouts, side panels, a bottom dock) overlaps itself badly under about 640px of width. This pack adds two small files that fix that on a phone, plus an optional local launcher. It does not modify any file in the upstream app: everything here is additive.
 
+## Before and after
+
+Same app, same camera, on a 412px-wide phone screen (Galaxy S22 Ultra).
+
+| Before | After |
+| :---: | :---: |
+| <img src="screenshots/cctv-before.jpg" width="330" alt="CCTV view before: status chips sitting on top of the DATA LAYERS and SCENES bars, panels spanning nearly the full screen width, attribution cut off at the right edge, and the bottom dock labels clipped to L and ESETS"> | <img src="screenshots/cctv-after.jpg" width="330" alt="CCTV view after: compact aligned panel bars, the status chip moved clear to the right, live camera thumbnails visible on the map, and readable dock labels"> |
+| Status chips landing on the panel bars, attribution running off the right edge, dock reading "L" and "ESETS" | Bars compact and aligned, chip clear of the panels, map cameras visible, dock readable |
+
+Idle, which is most of the time:
+
+| Before | After |
+| :---: | :---: |
+| <img src="screenshots/idle-before.jpg" width="330" alt="Idle view before: five wide panel bars, each spanning most of the screen width"> | <img src="screenshots/idle-after.jpg" width="330" alt="Idle view after: five narrow bars of identical width, left aligned, with most of the globe visible"> |
+| Five bars at 380px wide, 250px of stacked height | Five bars at 176px, 196px stacked, one straight column |
+
 ## What's in this pack
 
 | File                      | Purpose                                                                                                                                                                         |
@@ -62,6 +78,11 @@ One rule in `mobile-fix.css` sits outside that media query on purpose: it hides 
   ```js
   localStorage.removeItem("godsEyeView.local.setup.v1");
   ```
+
+Opening cold into a saved setup, with Esri Satellite and the Cameras layer
+already restored:
+
+<img src="screenshots/restored-setup.jpg" width="330" alt="The app opening straight into a saved setup: Esri satellite imagery, Cameras layer already on with live camera thumbnails on the map, and the CCTV panel open">
 
 ### Data caveat
 
