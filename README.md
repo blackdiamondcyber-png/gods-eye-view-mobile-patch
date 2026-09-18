@@ -32,6 +32,32 @@ Idle, which is most of the time:
 
 ## Install
 
+**This pack is not the app.** It is three files that go into an existing
+install of God's Eye View. If you do not have the app yet, start here:
+
+```bash
+git clone https://github.com/bilawalsidhu/gods-eye-view.git
+cd gods-eye-view
+npm ci
+```
+
+You need [Node.js](https://nodejs.org) (an LTS version) for that step.
+
+**No accounts or API keys are required.** Upstream's own README says so
+directly: the app starts with Esri satellite imagery and keyless terrain, with
+OSM as a fallback. Keys are only needed for specific extras, and every one of
+them has a free tier:
+
+| Want | Needs |
+| --- | --- |
+| The app, a globe, flights, satellites, rocket launches | nothing at all |
+| Google Photorealistic 3D Tiles (the 3D city view) | a free Cesium ion token |
+| Live ships | a free AISStream key |
+| Active fires | a free NASA FIRMS key (email only, no account) |
+| Live road traffic | a free TomTom key |
+
+Then install the pack:
+
 1. Copy `mobile-fix.css`, `session-memory.js` and `mesh-detail.js` into the app's `public/` folder.
 2. Add these three lines inside `<head>` in `index.html`:
 
@@ -41,10 +67,11 @@ Idle, which is most of the time:
    <script src="/mesh-detail.js" defer></script>
    ```
 
-3. Rebuild:
+3. Build and run:
 
    ```bash
    npm run build
+   npm run preview
    ```
 
 Each file is independent, so you can install only the ones you want. To revert, delete the files and their lines; nothing else changes.
