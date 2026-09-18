@@ -33,7 +33,20 @@ Idle, which is most of the time:
 ## Install
 
 **This pack is not the app.** It is three files that go into an existing
-install of God's Eye View. If you do not have the app yet, start here:
+install of God's Eye View.
+
+**If you just want to run the app and do not care about the phone fixes,
+skip this repo entirely.** Upstream has a one click installer with no
+terminal involved: install [Pinokio](https://desktop.pinokio.co/) 8.2 or
+later, open
+[God's Eye View in Pinokio](https://pinokio.co/apps/github-com-bilawalsidhu-gods-eye-view),
+and click Install then Start. Windows, macOS and Linux. That is the fastest
+way in by a wide margin.
+
+This pack is worth the extra effort mainly if you want to use the app **on a
+phone**, since that is what it fixes.
+
+To install the app from a terminal instead:
 
 ```bash
 git clone https://github.com/bilawalsidhu/gods-eye-view.git
@@ -41,7 +54,9 @@ cd gods-eye-view
 npm ci
 ```
 
-You need [Node.js](https://nodejs.org) (an LTS version) for that step.
+You need [Node.js](https://nodejs.org) (an LTS version) for that. If you
+installed through Pinokio, the app lives inside Pinokio's own folder, so you
+would need to find that directory before copying the files in below.
 
 **No accounts or API keys are required.** Upstream's own README says so
 directly: the app starts with Esri satellite imagery and keyless terrain, with
