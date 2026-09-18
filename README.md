@@ -4,6 +4,40 @@ Unofficial patch pack for [God's Eye View](https://github.com/bilawalsidhu/gods-
 
 Upstream has no mobile layout yet. Its desktop UI (corner HUD readouts, side panels, a bottom dock) overlaps itself badly under about 640px of width. This pack adds two small files that fix that on a phone, plus an optional local launcher. It does not modify any file in the upstream app: everything here is additive.
 
+## The best part: 3,663 live CCTV cameras, no key needed
+
+The layer worth turning on first is **Cameras**. It puts thousands of real,
+public traffic cameras onto the globe as live thumbnails you can click into,
+and it needs no account and no API key at all.
+
+Counted in the running app, 3,663 cameras:
+
+| Where | Cameras |
+| --- | ---: |
+| Finland | 300 |
+| Tallinn | 255 |
+| Austin | 250 |
+| London | 250 |
+| Calgary | 217 |
+| Lower Mainland, BC | 163 |
+| Vancouver Island | 87 |
+| San Diego | 68 |
+| Sydney | 68 |
+| Sacramento | 58 |
+| Texas highways (IH-35, IH-10) | 186 |
+
+Frames are live, not stills: the timestamps burned into the images match the
+current time. Turn it on under DATA LAYERS, and the CCTV panel opens on its
+own with the nearest camera.
+
+Two things this pack does for that layer specifically: the panel is readable on
+a phone instead of running off the screen, and `session-memory.js` remembers
+that Cameras was on, so it comes back the next time instead of being switched
+off again.
+
+Worth knowing: it is the heaviest layer, around 34 MB per minute while it
+streams. Fine on wifi, less so on a metered connection.
+
 ## Before and after
 
 Same app, same camera, on a 412px-wide phone screen (Galaxy S22 Ultra).
