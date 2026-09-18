@@ -1,0 +1,441 @@
+/* ---------------------------------------------------------------------------
+ * God's Eye View - phone layout patch (local, 2026-09-18)
+ *
+ * Upstream has no mobile profile yet (issue #79 open). The desktop design puts
+ * telemetry in four screen corners plus two side rails plus centred status
+ * chips. At ~412px those all land on top of each other.
+ *
+ * Measured on the running app (412x915, DPR 3, cameras layer on):
+ *   side panels 380px wide, 92% of the screen      -> 176px, 43%
+ *   five collapsed bars stacking to 250px          -> 196px
+ *   six blocks of HUD telemetry past the right edge,
+ *     up to 50px off                               -> none
+ *   status chips landing on the DATA LAYERS and SCENES bars
+ *
+ * Verified afterwards: zero overlapping painted elements in three states
+ * (idle, DATA LAYERS open, CCTV in use).
+ *
+ * The percentages from the first audit are deliberately NOT quoted here.
+ * That pass compared raw getBoundingClientRect() boxes, which ignore
+ * clipping ancestors and scroll offsets, and it over-reported badly.
+ * See CHANGES.md.
+ *
+ * Scoped to <=640px, so the desktop layout is untouched.
+ * Revert: delete this file and its <link> in index.html.
+ * ------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  /* === 1. HUD corners ====================================================
+   * Each corner gets at most ~42vw so left and right can never meet, and
+   * .hud-content's hard-coded width:420px is released back to auto. */
+  .hud-corner {
+    max-width: 42vw !important;
+    box-sizing: border-box !important;
+    /* Children here are inline spans, where max-width is ignored outright.
+     * Clipping at the corner catches them whatever they are. */
+    overflow: hidden !important;
+  }
+
+  /* Give inline telemetry spans a box so max-width can actually apply. */
+  #hud-timestamp,
+  #hud-orbit,
+  .hud-classification,
+  .hud-system,
+  .hud-mode,
+  .hud-summary {
+    display: inline-block !important;
+  }
+
+  .hud-corner .hud-content,
+  .hud-corner .hud-summary-wrap {
+    width: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .hud-corner.hud-top-left,
+  .hud-corner.hud-bottom-left {
+    left: 6px !important;
+  }
+
+  .hud-corner.hud-top-right,
+  .hud-corner.hud-bottom-right {
+    right: 6px !important;
+  }
+
+  /* Truncate rather than overflow. */
+  .hud-classification,
+  .hud-system,
+  .hud-mode,
+  .hud-summary,
+  .hud-summary-label,
+  #hud-summary,
+  #hud-mode,
+  #hud-mgrs,
+  .hud-corner .hud-content > * {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  /* Small enough that a truncated line still says something. */
+  .hud-classification,
+  .hud-system,
+  .hud-summary-label {
+    font-size: 8px !important;
+    letter-spacing: 1px !important;
+  }
+
+  #hud-summary.hud-summary,
+  #hud-mgrs {
+    font-size: 9px !important;
+  }
+
+  #hud-mode.hud-mode {
+    font-size: 12px !important;
+  }
+
+  /* === 2. Status chips ===================================================
+   * "REFRESHING LIVE DATA" and "LOADING FRAMES ###/####" are centred overlays
+   * that landed straight on the layer panel. Pin them to the very top, above
+   * everything, compact. */
+  #cctv-sync-chip,
+  #global-loading-status {
+    top: 2px !important;
+    bottom: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    max-width: 94vw !important;
+    font-size: 8.5px !important;
+    padding: 2px 7px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    z-index: 60 !important;
+  }
+
+  /* The toolbar buttons occupy roughly y=28..72, so the second chip drops
+   * below them rather than stacking on the first one or on the buttons.
+   * It also has to clear the left panel stack, which the app starts at y=70
+   * and which is 239px wide - so this one is right-anchored, not centred. */
+  #global-loading-status {
+    top: 78px !important;
+    left: auto !important;
+    right: 6px !important;
+    transform: none !important;
+    max-width: 36vw !important;
+  }
+
+  /* The top-right timestamp block is positioned independently of .hud-corner,
+   * anchored by a hard left offset (left:296px), so a width cap alone still
+   * left it off-screen. Re-anchor it to the right edge instead. */
+  #hud-timestamp,
+  #hud-orbit {
+    left: auto !important;
+    right: 6px !important;
+  }
+
+  /* 100%, not 42vw: these spans sit inside .hud-rec / .hud-content, which are
+   * already narrower than 42vw. Sizing against the viewport made them overflow
+   * their own parent and get cut mid-character instead of ellipsised. */
+  #hud-timestamp,
+  #hud-orbit,
+  [id^='hud-'] {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  /* === 3. Side panels ==================================================== */
+  #left-panel-stack,
+  #right-context-rail {
+    max-width: 58vw !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Decorative glow boxes were 4px wider than their panel on both sides. */
+  .panel-glow,
+  .title-glow {
+    max-width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  /* The left stack's own top, and #data-panel's max-height, are both derived
+   * from --left-stack-top (foundation.css:25, default 26vh). An earlier pass
+   * here overrode #left-panel-stack{top} directly to 30vh, which moved the
+   * container 37px DOWN without moving the variable the height formula reads -
+   * so the open DATA LAYERS list lost 37px and clipped its rows mid-word.
+   * Drive the app's own variable instead, and leave it at the app's value. */
+  :root {
+    --left-stack-top: 26vh !important;
+  }
+
+  /* === 3b. Compact the COLLAPSED panel bars =============================
+   * Requested: the shut DATA LAYERS / SCENES / VISUAL PRESETS / CCTV /
+   * CONTEXT bars stacked to 250px of a 915px screen just sitting closed.
+   *
+   * Measured cause: a collapsed panel is 68px tall but its .panel-header is
+   * only 40px of that. The other 28px is the inner wrapper's desktop padding
+   * (14px 16px 10px). Removing that padding *while collapsed* reclaims it
+   * without shrinking a single tap target.
+   *
+   * Scoped to .collapsed on purpose. An earlier pass capped panel height
+   * unconditionally and squashed the open DATA LAYERS list to a sliver. An
+   * open panel here keeps the app's own spacing, untouched.
+   *
+   * The class-suffix selector covers data-panel-inner / scene-panel-inner /
+   * cctv-panel-inner / global-context-panel-inner in one rule, and is scoped
+   * to the two side stacks so the bottom dock's 60px trays are left alone. */
+  #left-panel-stack .panel-collapsible.collapsed > [class$='-inner'],
+  #right-context-rail .panel-collapsible.collapsed > [class$='-inner'] {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    /* layers.css pins the three rail bars with BOTH height:50px and
+     * min-height:50px - zeroing only min-height left them unchanged. */
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  /* With the wrapper padding gone the 40px header IS the bar, and the 32px
+   * open/close button inside it keeps its full size. */
+  #left-panel-stack .panel-collapsible.collapsed .panel-header,
+  #right-context-rail .panel-collapsible.collapsed .panel-header {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+
+  /* VISUAL PRESETS uses its own header row with a hard 50px min-height. */
+  #pp-toggles.collapsed .pp-header-row {
+    height: auto !important;
+    min-height: 0 !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+
+  /* The decorative halo is drawn 20px taller than its panel on each side.
+   * Behind a 44px bar that bleeds onto the neighbours. */
+  #left-panel-stack .panel-collapsible.collapsed .panel-glow,
+  #right-context-rail .panel-collapsible.collapsed .panel-glow {
+    top: -5px !important;
+    bottom: -5px !important;
+    height: auto !important;
+  }
+
+  #left-panel-stack .panel-header,
+  #right-context-rail .panel-header,
+  .panel-collapsible .panel-header {
+    padding: 4px 10px !important;
+    gap: 6px !important;
+  }
+
+  .panel-title {
+    font-size: 10px !important;
+    letter-spacing: 1.2px !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Tighten the gap between stacked panels. Deliberately NOT touching
+   * panel-body height - overriding that fought the app's own sizing and
+   * squeezed the layer list down to a sliver. */
+  #left-panel-stack,
+  #right-context-rail {
+    gap: 6px !important;
+  }
+
+  /* === 3c. Keep tap targets usable ======================================
+   * Compact must not mean untappable. The 40px .panel-header IS the tap
+   * target for open/close, and nothing above shrinks it - only the dead
+   * padding around it. An earlier pass took these to 7px, which is unusable
+   * on a phone and well under the 44px guideline. */
+  .panel-collapse-btn {
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+
+  /* === 3d. Bottom dock tray labels ======================================
+   * "LOCATION" and "PRESETS" are positioned outside their own 52px tray and
+   * render as "L" and "ESETS" under the voice widget. The icons are the
+   * actual controls; the clipped text is noise. */
+  /* The dock labels were clipped to "L" and "ESETS" because the 140px voice
+   * widget sat between the two trays. That widget is gone now, and the dock
+   * is content-sized, so the labels fit - they just need room to size to
+   * their own text instead of inheriting the old squeezed tray width.
+   *
+   * They are NOT display:none any more. Hiding them left
+   * #location-bar-toggle at 28x0: a zero-height button nobody can tap. */
+  /* "L" and "ESETS" came from the app's own phone rule, not from the voice
+   * widget: command-dock-trays.css:501 clamps both dock labels to
+   * max-width 2.3rem (37px) with ellipsis, and :496 shrinks each tray to
+   * 3.25rem (52px). Desktop uses clamp(9.5rem, 12vw, 10.5rem).
+   *
+   * Set the tray variable on #command-dock, NOT on :root - the app declares
+   * it on #command-dock itself, so a :root value never reaches it. Everything
+   * downstream sizes off the app's own calc(var(--dock-side-compact) - 1.5rem),
+   * so one number does the whole job. The 140px voice widget used to sit
+   * between the trays; with it gone, two 140px trays fit a 412px screen. */
+  #command-dock {
+    --dock-side-compact: 8.75rem !important;
+  }
+
+  #command-dock .panel-title,
+  #command-dock .location-toolbar-label {
+    max-width: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    font-size: 9px !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  /* === 3e. One straight column ==========================================
+   * Collapsed, DISPLAY is a 176px chip pushed 63px right by margin-left:auto
+   * while CCTV and CONTEXT sit full-width at the left edge, so the five bars
+   * read as two ragged columns. Line them all up. */
+  #right-context-rail > .panel-collapsible.collapsed,
+  #left-panel-stack > .panel-collapsible.collapsed {
+    width: 176px !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  /* The rail is align-items:flex-end, so narrowing the bars pushed them to
+   * x=79 while the left stack's stayed at x=16. margin-left:0 cannot beat the
+   * flex alignment - the container has to align to the start. */
+  #right-context-rail {
+    align-items: flex-start !important;
+  }
+
+  /* Trim the last of the vertical padding around the 32px open/close button.
+   * The button itself is untouched - it stays the tap target. */
+  #left-panel-stack .panel-collapsible.collapsed .panel-header,
+  #right-context-rail .panel-collapsible.collapsed .panel-header,
+  #pp-toggles.collapsed .pp-header-row {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+
+  /* === 4. Camera thumbnails ==============================================
+   * The CCTV panel's preview image was ~80vw tall-and-wide, pushing the panel
+   * past a third of the screen. Cap it so the controls under it stay reachable
+   * without scrolling. */
+  #right-context-rail img,
+  [id*='cctv'] img,
+  [class*='cctv'] img,
+  [class*='camera'] img {
+    max-width: 100% !important;
+    max-height: 18vh !important;
+    height: auto !important;
+    object-fit: cover !important;
+  }
+
+  /* Map-pinned camera thumbnails are a different thing - keep those small. */
+  #world-overlay-root img {
+    max-width: 30vw !important;
+    max-height: 12vh !important;
+    height: auto !important;
+  }
+
+  [class*='cctv-label'],
+  [class*='camera-label'] {
+    max-width: 38vw !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 8px !important;
+  }
+
+  /* === 4b. Inside an OPEN panel =========================================
+   * An open panel's body scrolls (the CCTV one holds ~560px of controls in a
+   * 311px box), but on Android Chrome the scrollbar is an invisible overlay,
+   * so PREV / NEXT / FOCUS / CALIBRATION look like they don't exist.
+   *
+   * .cctv-panel-inner is EXCLUDED on purpose: the app already gives it an 8px
+   * cyan gradient bar plus scrollbar-gutter:stable (cctv.css:48). Styling it
+   * here only made the app's own affordance thinner. */
+  #left-panel-stack [class$='-inner']:not(.cctv-panel-inner),
+  #right-context-rail [class$='-inner']:not(.cctv-panel-inner) {
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(0, 212, 255, 0.55) transparent !important;
+  }
+
+  #left-panel-stack [class$='-inner']:not(.cctv-panel-inner)::-webkit-scrollbar,
+  #right-context-rail [class$='-inner']:not(.cctv-panel-inner)::-webkit-scrollbar {
+    width: 6px !important;
+  }
+
+  #left-panel-stack [class$='-inner']:not(.cctv-panel-inner)::-webkit-scrollbar-thumb,
+  #right-context-rail [class$='-inner']:not(.cctv-panel-inner)::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.5) !important;
+    border-radius: 999px !important;
+  }
+
+  /* Tap targets that were measurably too small to hit with a thumb.
+   * .data-toggle-btn is the ON/OFF switch for each layer - including the
+   * Cameras one - and shipped 20px tall. */
+  .data-toggle-btn {
+    min-height: 30px !important;
+  }
+
+  #cctv-camera-select {
+    min-height: 34px !important;
+    min-width: 66px !important;
+  }
+
+  .cctv-cal-value {
+    min-height: 28px !important;
+  }
+
+  /* === 5. Bottom dock ==================================================== */
+  #command-dock {
+    max-width: calc(100vw - 12px) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* === 6. Cesium attribution ============================================= */
+  .cesium-widget-credits,
+  .cesium-credit-expand-link {
+    max-width: calc(100vw - 16px) !important;
+    width: auto !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    box-sizing: border-box !important;
+    font-size: 8px !important;
+  }
+
+  /* The CESIUM ion and Google logos are images, so the font-size above does
+   * nothing to them - they were ~130px wide across the bottom of the globe.
+   * Capped, not hidden: both providers require visible attribution. */
+  .cesium-widget-credits img,
+  .cesium-credit-expand-link img,
+  .cesium-credit-logoContainer img {
+    max-height: 12px !important;
+    width: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Voice control - hidden by default, 2026-09-18.
+ *
+ * NOT inside the phone media query: this hides it on the laptop too, because
+ * the decision was "we're not going to be using it", not "not on mobile".
+ *
+ * display:none rather than opacity/visibility so the mic is gone from hit
+ * testing entirely - there is no other way to start a voice session (the only
+ * keyboard shortcut on 'v' is clean-view, applicationShortcuts.js:37), so this
+ * closes the one control in the app that can spend money.
+ *
+ * panelLayoutController.js lists #gev-voice-control as a layout OBSTACLE; a
+ * display:none element measures 0x0, so it simply stops reserving space and
+ * the dock gets it back. Nothing divides by its size.
+ *
+ * Revert: delete this block. The voice code itself is untouched.
+ * ------------------------------------------------------------------------- */
+#gev-voice-control {
+  display: none !important;
+}

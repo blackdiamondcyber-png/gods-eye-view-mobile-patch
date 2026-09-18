@@ -1,0 +1,27 @@
+@echo off
+REM God's Eye View - local launcher (zero-cost, no paid APIs)
+REM Serves on GEV_HOST (set below) so the phone can reach it too.
+cd /d "%~dp0"
+
+REM Defaults to this PC only. To reach it from a phone or another device on
+REM your network, set this to your machine's LAN or Tailscale address instead
+REM - and make sure HOST in .env matches whatever you put here, or the server
+REM ends up bound to a different address than the one printed below.
+set GEV_HOST=localhost
+
+echo Building God's Eye View...
+call npm run build
+if errorlevel 1 goto :fail
+echo.
+echo   Open on this PC or your phone:  http://%GEV_HOST%:4173
+echo   (the server binds to GEV_HOST only - if you changed it above, plain localhost will NOT work)
+echo.
+echo Press Ctrl+C to stop.
+echo.
+start "" http://%GEV_HOST%:4173
+call npm run preview
+goto :eof
+:fail
+echo.
+echo Build failed. Run "npm ci" in this folder and try again.
+pause
