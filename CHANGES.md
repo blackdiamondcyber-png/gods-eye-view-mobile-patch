@@ -222,11 +222,12 @@ altitude sampled, so it was noise, and on a phone it covered the CCTV panel.
 
 ## 4. `index.html`
 
-Two lines, each with a comment saying how to revert.
+Three lines, each with a comment saying how to revert.
 
 ```html
 <link rel="stylesheet" href="/mobile-fix.css" />
 <script src="/session-memory.js" defer></script>
+<script src="/mesh-detail.js" defer></script>
 ```
 
 ---

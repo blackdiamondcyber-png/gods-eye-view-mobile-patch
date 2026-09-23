@@ -91,7 +91,7 @@ Then install the pack:
 
 Each file is independent, so you can install only the ones you want. To revert, delete the files and their lines; nothing else changes.
 
-Because this pack never touches app source, it survives upstream updates on its own. The one exception is `index.html` itself: pulling an upstream update that replaces that file will overwrite your two added lines, so re-add them afterward.
+Because this pack never touches app source, it survives upstream updates on its own. The one exception is `index.html` itself: pulling an upstream update that replaces that file will overwrite your three added lines, so re-add them afterward.
 
 ## What changed on a phone
 
