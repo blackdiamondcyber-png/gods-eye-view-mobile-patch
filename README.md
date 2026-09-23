@@ -4,6 +4,8 @@ Unofficial patch pack for [God's Eye View](https://github.com/bilawalsidhu/gods-
 
 Upstream has no mobile layout yet. Its desktop UI (corner HUD readouts, side panels, a bottom dock) overlaps itself badly under about 640px of width. This pack adds three small files that fix that on a phone, plus an optional local launcher. It does not modify any file in the upstream app: everything here is additive. Every number in this README was measured in the running app on an emulated 412px-wide phone, before and after.
 
+Why it is on this account: it is the clearest example here of measuring before claiming. `tools/measure-layout.mjs` re-measures the phone layout against any upstream build, and it proved two of this README's own earlier claims wrong (see [Measure it yourself](#measure-it-yourself)).
+
 ## Before and after
 
 Same app, same camera, on a 412px-wide phone screen (Galaxy S22 Ultra).
