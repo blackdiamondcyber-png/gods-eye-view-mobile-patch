@@ -1,42 +1,8 @@
-# 📱 God's Eye View: Mobile Patch Pack
+# God's Eye View: Mobile Patch Pack
 
 Unofficial patch pack for [God's Eye View](https://github.com/bilawalsidhu/gods-eye-view), a real-time geospatial intelligence console: a photorealistic 3D globe with live aircraft, ships, satellites, fires, traffic, and CCTV cameras. This pack is not affiliated with, and not endorsed by, the upstream project or its author.
 
-Upstream has no mobile layout yet. Its desktop UI (corner HUD readouts, side panels, a bottom dock) overlaps itself badly under about 640px of width. This pack adds two small files that fix that on a phone, plus an optional local launcher. It does not modify any file in the upstream app: everything here is additive.
-
-## The best part: 3,663 live CCTV cameras, no key needed
-
-The layer worth turning on first is **Cameras**. It puts thousands of real,
-public traffic cameras onto the globe as live thumbnails you can click into,
-and it needs no account and no API key at all.
-
-Counted in the running app, 3,663 cameras:
-
-| Where | Cameras |
-| --- | ---: |
-| Finland | 300 |
-| Tallinn | 255 |
-| Austin | 250 |
-| London | 250 |
-| Calgary | 217 |
-| Lower Mainland, BC | 163 |
-| Vancouver Island | 87 |
-| San Diego | 68 |
-| Sydney | 68 |
-| Sacramento | 58 |
-| Texas highways (IH-35, IH-10) | 186 |
-
-Frames are live, not stills: the timestamps burned into the images match the
-current time. Turn it on under DATA LAYERS, and the CCTV panel opens on its
-own with the nearest camera.
-
-Two things this pack does for that layer specifically: the panel is readable on
-a phone instead of running off the screen, and `session-memory.js` remembers
-that Cameras was on, so it comes back the next time instead of being switched
-off again.
-
-Worth knowing: it is the heaviest layer, around 34 MB per minute while it
-streams. Fine on wifi, less so on a metered connection.
+Upstream has no mobile layout yet. Its desktop UI (corner HUD readouts, side panels, a bottom dock) overlaps itself badly under about 640px of width. This pack adds three small files that fix that on a phone, plus an optional local launcher. It does not modify any file in the upstream app: everything here is additive. Every number in this README was measured in the running app on an emulated 412px-wide phone, before and after.
 
 ## Before and after
 
@@ -145,6 +111,40 @@ Checked with automated browser tests: zero overlapping painted elements across t
 
 One rule in `mobile-fix.css` sits outside that media query on purpose: it hides the voice control button everywhere, on phone and desktop alike. That is a deliberate removal, not a layout fix: it is the only control in the app that can spend money on its own, and there is no other way to open a voice session. Delete that one rule to bring the button back; the voice feature's own code is untouched.
 
+## The Cameras layer
+
+The layer worth turning on first is **Cameras**. It puts thousands of real,
+public traffic cameras onto the globe as live thumbnails you can click into,
+and it needs no account and no API key at all.
+
+Counted in the running app, 3,663 cameras:
+
+| Where | Cameras |
+| --- | ---: |
+| Finland | 300 |
+| Tallinn | 255 |
+| Austin | 250 |
+| London | 250 |
+| Calgary | 217 |
+| Lower Mainland, BC | 163 |
+| Vancouver Island | 87 |
+| San Diego | 68 |
+| Sydney | 68 |
+| Sacramento | 58 |
+| Texas highways (IH-35, IH-10) | 186 |
+
+Frames are live, not stills: the timestamps burned into the images match the
+current time. Turn it on under DATA LAYERS, and the CCTV panel opens on its
+own with the nearest camera.
+
+Two things this pack does for that layer specifically: the panel is readable on
+a phone instead of running off the screen, and `session-memory.js` remembers
+that Cameras was on, so it comes back the next time instead of being switched
+off again.
+
+Worth knowing: it is the heaviest layer, around 34 MB per minute while it
+streams. Fine on wifi, less so on a metered connection.
+
 ## Session memory
 
 `session-memory.js` watches the app's own layer toggle switches and map source buttons (it clicks the real controls, it does not reach into app state) and saves the result to `localStorage` under the key `godsEyeView.local.setup.v1`.
@@ -242,3 +242,5 @@ This patch pack is released under the MIT License, the same license as upstream.
 `LICENSE.upstream` is a copy of the God's Eye View project's own license, kept here for attribution. Its source code is MIT too, but that file carries an extra note worth reading: some bundled datasets (a submarine cable map, flood event imagery) are under separate, NonCommercial licenses, and some live data providers require your own API credentials and restrict commercial use (see upstream's `DATA_SOURCES.md` for the full breakdown). This patch pack does not add, bundle, or touch any of that data; it only adds the files listed above.
 
 All credit for the app itself goes to [bilawalsidhu/gods-eye-view](https://github.com/bilawalsidhu/gods-eye-view).
+
+More of my work: [erik-pearson-portfolio.vercel.app](https://erik-pearson-portfolio.vercel.app). Contact: [LinkedIn](https://www.linkedin.com/in/erikpearson2).
