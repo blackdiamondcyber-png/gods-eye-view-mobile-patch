@@ -1,0 +1,329 @@
+{
+  "upstream": {
+    "repo": "https://github.com/bilawalsidhu/gods-eye-view",
+    "commit": "75869d0c103794e4c60f879b6a9f8ca531634694",
+    "committed": "2026-09-18"
+  },
+  "browser": "Brave 1.95 (Chromium), headless, Playwright 1.62",
+  "url": "http://localhost:4173 (npm run preview)",
+  "measuredAt": "2026-09-23T11:07:26.513Z",
+  "phone": {
+    "before": {
+      "idle": {
+        "viewportWidth": 412,
+        "bars": [
+          {
+            "id": "data-panel",
+            "collapsed": true,
+            "x": 16,
+            "width": 380,
+            "height": 50
+          },
+          {
+            "id": "scene-panel",
+            "collapsed": true,
+            "x": 16,
+            "width": 380,
+            "height": 50
+          },
+          {
+            "id": "pp-toggles",
+            "collapsed": true,
+            "x": 220,
+            "width": 176,
+            "height": 50
+          },
+          {
+            "id": "cctv-panel",
+            "collapsed": true,
+            "x": 16,
+            "width": 380,
+            "height": 50
+          },
+          {
+            "id": "global-context-panel",
+            "collapsed": true,
+            "x": 16,
+            "width": 380,
+            "height": 50
+          }
+        ],
+        "hud": [
+          {
+            "id": "hud-mode",
+            "layoutPastEdge": 46,
+            "textCutOff": 0,
+            "underBars": []
+          },
+          {
+            "id": "hud-summary",
+            "layoutPastEdge": 46,
+            "textCutOff": 578,
+            "underBars": []
+          },
+          {
+            "id": "hud-rec-dot",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": [
+              "scene-panel"
+            ]
+          },
+          {
+            "id": "hud-timestamp",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": [
+              "scene-panel"
+            ]
+          },
+          {
+            "id": "hud-mgrs",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": []
+          },
+          {
+            "id": "hud-latlon",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": []
+          },
+          {
+            "id": "hud-gsd",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": []
+          },
+          {
+            "id": "hud-alt",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": []
+          },
+          {
+            "id": "hud-ais-vessel",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": []
+          }
+        ],
+        "dockLabels": [
+          {
+            "text": "LOCATION",
+            "textWidth": 84,
+            "shownWidth": 28,
+            "clipped": true
+          },
+          {
+            "text": "VISUAL PRESETS",
+            "textWidth": 130,
+            "shownWidth": 37,
+            "clipped": true
+          }
+        ],
+        "logos": [
+          138
+        ],
+        "voiceControlVisible": true
+      },
+      "layers": {
+        "expanded": true,
+        "panelWidth": 380,
+        "toggleHeights": [
+          20
+        ],
+        "toggles": 18,
+        "togglesFullyOnScreen": 5
+      }
+    },
+    "after": {
+      "idle": {
+        "viewportWidth": 412,
+        "bars": [
+          {
+            "id": "data-panel",
+            "collapsed": true,
+            "x": 16,
+            "width": 176,
+            "height": 40
+          },
+          {
+            "id": "scene-panel",
+            "collapsed": true,
+            "x": 16,
+            "width": 176,
+            "height": 40
+          },
+          {
+            "id": "pp-toggles",
+            "collapsed": true,
+            "x": 16,
+            "width": 176,
+            "height": 38
+          },
+          {
+            "id": "cctv-panel",
+            "collapsed": true,
+            "x": 16,
+            "width": 176,
+            "height": 40
+          },
+          {
+            "id": "global-context-panel",
+            "collapsed": true,
+            "x": 16,
+            "width": 176,
+            "height": 38
+          }
+        ],
+        "hud": [
+          {
+            "id": "hud-mode",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": []
+          },
+          {
+            "id": "hud-summary",
+            "layoutPastEdge": 0,
+            "textCutOff": 654,
+            "underBars": []
+          },
+          {
+            "id": "hud-rec-dot",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": []
+          },
+          {
+            "id": "hud-timestamp",
+            "layoutPastEdge": 49,
+            "textCutOff": 90,
+            "underBars": []
+          },
+          {
+            "id": "hud-mgrs",
+            "layoutPastEdge": 0,
+            "textCutOff": 12,
+            "underBars": []
+          },
+          {
+            "id": "hud-latlon",
+            "layoutPastEdge": 0,
+            "textCutOff": 123,
+            "underBars": []
+          },
+          {
+            "id": "hud-gsd",
+            "layoutPastEdge": 0,
+            "textCutOff": 41,
+            "underBars": []
+          },
+          {
+            "id": "hud-alt",
+            "layoutPastEdge": 0,
+            "textCutOff": 70,
+            "underBars": []
+          },
+          {
+            "id": "hud-ais-vessel",
+            "layoutPastEdge": 0,
+            "textCutOff": 0,
+            "underBars": []
+          }
+        ],
+        "dockLabels": [
+          {
+            "text": "LOCATION",
+            "textWidth": 73,
+            "shownWidth": 73,
+            "clipped": false
+          },
+          {
+            "text": "VISUAL PRESETS",
+            "textWidth": 111,
+            "shownWidth": 111,
+            "clipped": false
+          }
+        ],
+        "logos": [
+          59
+        ],
+        "voiceControlVisible": false
+      },
+      "layers": {
+        "expanded": true,
+        "panelWidth": 239,
+        "toggleHeights": [
+          30
+        ],
+        "toggles": 18,
+        "togglesFullyOnScreen": 4
+      }
+    }
+  },
+  "desktop": {
+    "idsCompared": 279,
+    "unstableIgnored": [
+      "hud-rec-dot"
+    ],
+    "changed": [
+      {
+        "id": "command-dock",
+        "before": "482,820,476,62",
+        "after": "552,820,336,62"
+      },
+      {
+        "id": "location-bar",
+        "before": "482,820,168,62",
+        "after": "552,820,168,62"
+      },
+      {
+        "id": "location-bar-toggle",
+        "before": "495,840,144,22",
+        "after": "565,840,144,22"
+      },
+      {
+        "id": "gev-voice-control",
+        "before": "650,804,140,86",
+        "after": "hidden"
+      },
+      {
+        "id": "gev-voice-status",
+        "before": "715,811,12,9",
+        "after": "hidden"
+      },
+      {
+        "id": "gev-voice-tier",
+        "before": "733,811,25,12",
+        "after": "hidden"
+      },
+      {
+        "id": "gev-voice-cost-value",
+        "before": "761,814,25,6",
+        "after": "hidden"
+      },
+      {
+        "id": "gev-voice-button",
+        "before": "657,811,42,66",
+        "after": "hidden"
+      },
+      {
+        "id": "gev-voice-detail",
+        "before": "710,863,73,9",
+        "after": "hidden"
+      },
+      {
+        "id": "control-panel",
+        "before": "790,820,168,62",
+        "after": "720,820,168,62"
+      },
+      {
+        "id": "control-panel-toggle",
+        "before": "803,840,144,22",
+        "after": "733,840,144,22"
+      }
+    ]
+  }
+}

@@ -18,9 +18,15 @@ layer on and 3,663 cameras loaded. Nothing here is estimated.
 | Layer ON/OFF switch height        | 20px                        | 30px                    |
 | Map data, ~30s of panning         | 41.9 MB (Google 3D)         | 1.7 MB (Esri Satellite) |
 
-Verified with automated browser checks: zero overlapping painted elements in
-three states (idle, DATA LAYERS open, CCTV in use), nothing painted past the
-right edge, and the desktop layout at 1440 x 900 unaffected.
+Re-measured on 23 Sep 2026 with `tools/measure-layout.mjs` against upstream
+[`75869d0`](https://github.com/bilawalsidhu/gods-eye-view/commit/75869d0c103794e4c60f879b6a9f8ca531634694) (18 Sep, the commit this pack was written against) and [`082074a`](https://github.com/bilawalsidhu/gods-eye-view/commit/082074a00684af97458b85529093e2b2a9f28ed1)
+(22 Sep); results in `tools/results/`. The panel width, bar width and height,
+dock label and switch rows reproduce exactly, as does the first logo (138px to
+59px); the second logo did not appear in these runs, which had no API keys set.
+Two corrections to what this file used to say. The desktop layout at 1440 x 900
+is not untouched: removing the voice control (1.9) re-centres the bottom dock,
+moving its two panels 70px. And the zero-overlap check is withdrawn, for the
+reason given under "A metric that cannot separate before from after".
 
 ---
 

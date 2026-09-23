@@ -28,6 +28,7 @@ Idle, which is most of the time:
 | `session-memory.js`       | Remembers which data layers were on and which map source was picked, and restores them on the next visit                                                                        |
 | `mesh-detail.js`          | Explains the smeared 3D geometry when Google's mesh runs out of detail, and offers a one-tap fix                                                                                 |
 | `start-gods-eye-view.cmd.example` | Optional Windows launcher that builds the app and opens it at an address you set                                                                                                |
+| `tools/measure-layout.mjs` | Measures the phone layout before and after against your own running build (see [Measure it yourself](#measure-it-yourself)) |
 | `LICENSE.upstream`        | A copy of the upstream project's license, kept here for attribution                                                                                                             |
 
 ## Install
@@ -105,7 +106,34 @@ Measured in Chrome, emulating a Galaxy S22 Ultra (412x915 CSS pixels, device pix
 | Bottom dock labels                              | Clipped to "L" and "ESETS" (the app's own phone rule caps them at 2.3rem, 37px) | Full text: "LOCATION" and "VISUAL PRESETS"                                 |
 | Layer ON/OFF switch height                      | 20px                                                                            | 30px (trade-off: 7 layer rows fit on screen at once, instead of 10) |
 
-Checked with automated browser tests: zero overlapping painted elements across three states (idle, DATA LAYERS panel open, CCTV in use). The layout at 1440x900 (desktop) is unaffected, since these rules are scoped to `max-width: 640px`.
+### Measure it yourself
+
+`tools/measure-layout.mjs` opens your running build as the same 412px phone, once as upstream ships it and once with this pack added the way [Install](#install) describes, and prints the two side by side. It changes nothing in your checkout. Against upstream commit [`082074a`](https://github.com/bilawalsidhu/gods-eye-view/commit/082074a00684af97458b85529093e2b2a9f28ed1) (22 Sep 2026), with no data layers on and the first-launch dialog still open:
+
+```text
+                                             upstream as shipped                with this pack
+Collapsed bar widths                         380 / 380 / 176 / 380 / 380        176 / 176 / 176 / 176 / 176
+Collapsed bar x positions                    16, 220                            16
+Collapsed bar heights, summed                250px (5 bars)                     196px (5 bars)
+HUD layout boxes past the right edge         2, up to 46px                      1, up to 49px
+HUD readouts with text cut off               1 (hud-summary 578px)              6 (hud-summary 654px, hud-timestamp 90px, hud-mgrs 12px, hud-latlon 123px, hud-gsd 41px, hud-alt 70px)
+HUD readouts under a panel bar               2 (hud-rec-dot, hud-timestamp)     0
+Dock labels                                  LOCATION (28 of 84px shown); VISUAL PRESETS (37 of 130px shown) LOCATION; VISUAL PRESETS
+Attribution logos                            138px                              59px
+Voice control button                         visible                            hidden
+DATA LAYERS open: panel width                380px                              239px
+DATA LAYERS open: switch height, rows        20px, 5 of 24 fully on screen      30px, 4 of 24 fully on screen
+```
+
+Against [`75869d0`](https://github.com/bilawalsidhu/gods-eye-view/commit/75869d0c103794e4c60f879b6a9f8ca531634694) (18 Sep 2026), the upstream commit this pack was written against, every row is the same except that the DATA LAYERS panel lists 18 layers instead of 24. Both runs are saved in `tools/results/`.
+
+The panel widths, the 250px to 196px, both dock labels and the switch height match the table above exactly. Where the tool sees more than that table says:
+
+- **HUD telemetry.** The pack keeps readouts on screen by capping each HUD corner at 42% of the width and ending longer readouts with an ellipsis. With no layers on, that shortens six of them; the timestamp loses about 90px. Without the pack the timestamp sits under the full-width panel bars instead, and the summary line runs off the right edge. The table's "6 blocks, up to 50px" was measured with the Cameras layer on, which the tool does not turn on.
+- **Rows on screen.** The table's 10 and 7 came from the original session, and how they were counted is not recorded. The tool counts layer rows fully visible inside the open panel and gets 5 and 4 of 24. Taller switches, fewer rows, either way.
+- **Desktop.** The phone rules are scoped to `max-width: 640px`, but the voice control rule is not (see below). At 1440x900 its removal is the only change: the dock loses the control's 140px and re-centres, which moves its two panels 70px.
+
+An earlier version of this section said automated tests found zero overlapping painted elements. That check read zero on the unpatched build too (see `CHANGES.md`), so it said nothing about this pack, and it is no longer quoted.
 
 ### Voice control, removed
 
