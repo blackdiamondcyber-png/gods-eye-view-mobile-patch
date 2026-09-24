@@ -147,7 +147,7 @@ The layer worth turning on first is **Cameras**. It puts thousands of real,
 public traffic cameras onto the globe as live thumbnails you can click into,
 and it needs no account and no API key at all.
 
-Counted in the running app, 3,663 cameras:
+Counted in the running app, 3,663 cameras in all. Some of the sources, with the count from each:
 
 | Where | Cameras |
 | --- | ---: |
